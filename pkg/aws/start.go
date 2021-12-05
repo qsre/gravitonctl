@@ -1,6 +1,7 @@
 package aws
 
 import (
+	"errors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -9,7 +10,16 @@ import (
 )
 
 // Start starts an EC2 Graviton instance
-func Start(name string) {
+func Start(name string) error {
+
+	instances, err := describeRunningInstances(name)
+	if err != nil {
+		return err
+	}
+
+	if len(instances) > 0 {
+		return errors.New("this instance already exists")
+	}
 
 	// bare minimum input
 	input := &ec2.RunInstancesInput{
@@ -26,10 +36,12 @@ func Start(name string) {
 		KeyName:      aws.String("berty_key"),
 		MaxCount:     aws.Int64(1),
 		MinCount:     aws.Int64(1),
+
 		// SecurityGroupIds: []*string{
 		// 	aws.String("sg-064d01f01ebe545ce"),
 		// },
 		// SubnetId: aws.String("subnet-51519f2a"),
+
 		TagSpecifications: []*ec2.TagSpecification{
 			{
 				ResourceType: aws.String("instance"),
@@ -39,8 +51,8 @@ func Start(name string) {
 						Value: aws.String("gravitonctl"),
 					},
 					{
-						Key:	aws.String("Name"),
-						Value:  &name,
+						Key:   aws.String("Name"),
+						Value: &name,
 					},
 				},
 			},
@@ -52,13 +64,15 @@ func Start(name string) {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			default:
-				log.Error(aerr.Error())
+				return err
 			}
 		} else {
-			log.Error(err.Error())
+			return err
 		}
-		return
+		return err
 	}
 
 	log.Infof("Instance launched: %s", *result.Instances[0].InstanceId)
+
+	return nil
 }

@@ -14,7 +14,10 @@ var startCmd = &cobra.Command{
 			log.Error("Please supply a name")
 			return
 		}
-		aws.Start(args[0])
+		err := aws.Start(args[0])
+		if err != nil {
+			panic(err)
+		}
 
 		connectCmd.Run(cmd, args)
 		return

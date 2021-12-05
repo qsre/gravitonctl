@@ -14,7 +14,11 @@ var terminateCmd = &cobra.Command{
 			log.Error("Please supply a name")
 			return
 		}
-		aws.Terminate(args[0])
+		err := aws.Terminate(args[0])
+		if err != nil {
+			panic(err)
+		}
+
 		return
 	},
 }

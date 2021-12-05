@@ -11,7 +11,6 @@ import (
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
-
 )
 
 var connectCmd = &cobra.Command{
@@ -105,7 +104,7 @@ var connectCmd = &cobra.Command{
 		}
 
 		modes := ssh.TerminalModes{
-			ssh.ECHO: 1,
+			ssh.ECHO:          1,
 			ssh.TTY_OP_ISPEED: 14400,
 			ssh.TTY_OP_OSPEED: 14400,
 		}

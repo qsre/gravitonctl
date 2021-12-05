@@ -5,7 +5,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	log "github.com/sirupsen/logrus"
 )
 
 var REGION = "eu-west-3"
@@ -21,7 +20,7 @@ func init() {
 	ec2svc = ec2.New(sess)
 }
 
-func describeAllInstances() (instances []*ec2.Instance){
+func describeAllInstances() (instances []*ec2.Instance, err error) {
 	describeInstancesInput := ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
@@ -38,34 +37,61 @@ func describeAllInstances() (instances []*ec2.Instance){
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			default:
-				log.Error(aerr.Error())
+				return instances, err
 			}
 		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			log.Error(err.Error())
+			return instances, err
 		}
-		return instances
 	}
 
 	for _, reservations := range describeInstancesResult.Reservations {
 		instances = append(instances, reservations.Instances...)
 	}
 
-	return instances
+	return instances, nil
 }
 
-func describeInstance(name string) (instances []*ec2.Instance) {
-	unfilteredInstances := describeAllInstances()
+func describeAllRunningInstances() (instances []*ec2.Instance, err error) {
+	allInstances, err := describeAllInstances()
+	if err != nil {
+		return instances, err
+	}
 
+	for _, instance := range allInstances {
+		if *instance.State.Name == ec2.InstanceStateNameRunning {
+			instances = append(instances, instance)
+		}
+	}
+
+	return instances, err
+}
+
+func filterInstancesByName(unfilteredInstances []*ec2.Instance, name string) (instances []*ec2.Instance) {
 	for _, instance := range unfilteredInstances {
 		for _, tag := range instance.Tags {
 			if *tag.Key == "Name" && *tag.Value == name {
-				// check for multiple instances with the same name tag
 				instances = append(instances, instance)
 			}
 		}
 	}
 
 	return instances
+}
+
+func describeInstances(name string) (instances []*ec2.Instance, err error) {
+	unfilteredInstances, err := describeAllInstances()
+	if err != nil {
+		return instances, err
+	}
+
+	return filterInstancesByName(unfilteredInstances, name), err
+}
+
+func describeRunningInstances(name string) (instances []*ec2.Instance, err error) {
+	unfilteredInstances, err := describeAllRunningInstances()
+	if err != nil {
+		return instances, err
+	}
+
+	return filterInstancesByName(unfilteredInstances, name), err
 }
