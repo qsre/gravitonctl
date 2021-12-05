@@ -1,5 +1,7 @@
 # gravitonctl
 
+## not ready for public use yet (still testing)!
+
  Launch & use a graviton instance in 5 seconds.
 
 ## Usage:
