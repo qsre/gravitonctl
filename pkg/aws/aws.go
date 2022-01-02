@@ -13,11 +13,20 @@ var sess *session.Session
 var ec2svc *ec2.EC2
 
 func init() {
+	setSessions()
+}
+
+func setSessions() {
 	sess = session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(REGION),
 	}))
 
 	ec2svc = ec2.New(sess)
+}
+
+func ReInitWithRegion(region string) {
+	REGION = region
+	setSessions()
 }
 
 func describeAllInstances() (instances []*ec2.Instance, err error) {

@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"gravitonctl/pkg/aws"
+	"gravitonctl/pkg/config"
 	"io/ioutil"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
@@ -17,12 +19,19 @@ var connectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Connects to a graviton instance",
 	Run: func(cmd *cobra.Command, args []string) {
+		c, err := config.Read()
+		if err != nil {
+			log.Exit(0)
+		}
+
 		if len(args) == 0 {
 			log.Error("Please supply a name")
 			return
 		}
 
-		key, err := ioutil.ReadFile("/home/mathis/Downloads/berty_key.pem")
+		// this code is a mess and needs to be cleaned up!
+
+		key, err := ioutil.ReadFile(c.KeyLocation)
 		if err != nil {
 			log.Fatalf("unable to read private key: %v", err)
 		}
@@ -135,7 +144,5 @@ var connectCmd = &cobra.Command{
 			}
 			log.Errorf("ssh: %s", err)
 		}
-
-		return
 	},
 }

@@ -2,6 +2,7 @@ package aws
 
 import (
 	"errors"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -10,7 +11,7 @@ import (
 )
 
 // Start starts an EC2 Graviton instance
-func Start(name string) error {
+func Start(name string, keyName string) error {
 
 	instances, err := describeRunningInstances(name)
 	if err != nil {
@@ -31,9 +32,9 @@ func Start(name string) error {
 				},
 			},
 		},
-		ImageId:      aws.String("ami-0b5d05f884ff8bd47"),
+		ImageId:      aws.String("ami-0a7559a0ef82639f2"),
 		InstanceType: aws.String(ec2.InstanceTypeT4gMicro),
-		KeyName:      aws.String("berty_key"),
+		KeyName:      &keyName,
 		MaxCount:     aws.Int64(1),
 		MinCount:     aws.Int64(1),
 
@@ -69,7 +70,6 @@ func Start(name string) error {
 		} else {
 			return err
 		}
-		return err
 	}
 
 	log.Infof("Instance launched: %s", *result.Instances[0].InstanceId)

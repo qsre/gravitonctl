@@ -43,7 +43,6 @@ func Terminate(name string) error {
 				return err
 			}
 		}
-		return err
 	}
 	return err
 }
