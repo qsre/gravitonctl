@@ -10,7 +10,7 @@ import (
 
 var terminateCmd = &cobra.Command{
 	Use:   "terminate",
-	Short: "Terminates a graviton instance",
+	Short: "terminates a graviton instance",
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := config.Read()
 		if err != nil {
@@ -18,7 +18,7 @@ var terminateCmd = &cobra.Command{
 		}
 
 		if len(args) == 0 {
-			log.Error("Please supply a name")
+			log.Error("please supply a name")
 			return
 		}
 		err = aws.Terminate(args[0])

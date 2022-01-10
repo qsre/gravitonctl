@@ -10,7 +10,7 @@ import (
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Starts a graviton instance",
+	Short: "starts a graviton instance",
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := config.Read()
 		if err != nil {
@@ -18,7 +18,7 @@ var startCmd = &cobra.Command{
 		}
 
 		if len(args) == 0 {
-			log.Error("Please supply a name")
+			log.Error("please supply a name")
 			return
 		}
 		err = aws.Start(args[0], c.KeyName)

@@ -10,7 +10,7 @@ import (
 
 var configureCmd = &cobra.Command{
 	Use:   "configure",
-	Short: "Configures graviton ctl",
+	Short: "configures graviton ctl",
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("configuring gravitonctl")
 
@@ -29,7 +29,7 @@ var configureCmd = &cobra.Command{
 		}
 
 		// KEY NAME
-		fmt.Printf("Default key name [ie: myKey]: ")
+		fmt.Printf("default key name [ie: myKey]: ")
 		var keyName string
 		l, err = fmt.Scanln(&keyName)
 		if err != nil {
@@ -44,7 +44,7 @@ var configureCmd = &cobra.Command{
 		}
 
 		// KEY LOCATION
-		fmt.Printf("Default key location [ie: ~/myKey.pem]: ")
+		fmt.Printf("default key location [ie: ~/myKey.pem]: ")
 		var keyLocation string
 		l, err = fmt.Scanln(&keyLocation)
 		if err != nil {

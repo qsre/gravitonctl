@@ -17,7 +17,7 @@ import (
 
 var connectCmd = &cobra.Command{
 	Use:   "connect",
-	Short: "Connects to a graviton instance",
+	Short: "connects to a graviton instance",
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := config.Read()
 		if err != nil {
@@ -52,7 +52,7 @@ var connectCmd = &cobra.Command{
 
 		var ip string
 
-		log.Infof("Connecting to instance: %s", args[0])
+		log.Infof("connecting to instance: %s", args[0])
 		for {
 			ip, err = aws.GetIp(args[0])
 			if err != nil {
