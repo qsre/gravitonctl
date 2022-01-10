@@ -15,6 +15,11 @@ To connect to a Graviton instance:
 gravitonctl connect {name}
 ```
 
+To list all Graviton instances:
+```
+gravitonctl list
+```
+
 <!--
 To stop a Graviton instance
 ```

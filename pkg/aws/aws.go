@@ -60,7 +60,7 @@ func describeAllInstances() (instances []*ec2.Instance, err error) {
 	return instances, nil
 }
 
-func describeAllRunningInstances() (instances []*ec2.Instance, err error) {
+func DescribeAllRunningInstances() (instances []*ec2.Instance, err error) {
 	allInstances, err := describeAllInstances()
 	if err != nil {
 		return instances, err
@@ -97,7 +97,7 @@ func describeInstances(name string) (instances []*ec2.Instance, err error) {
 }
 
 func describeRunningInstances(name string) (instances []*ec2.Instance, err error) {
-	unfilteredInstances, err := describeAllRunningInstances()
+	unfilteredInstances, err := DescribeAllRunningInstances()
 	if err != nil {
 		return instances, err
 	}

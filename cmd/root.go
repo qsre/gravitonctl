@@ -10,7 +10,13 @@ import (
 // Execute executes the root command.
 func Execute() {
 	var rootCmd = &cobra.Command{Use: "app"}
-	rootCmd.AddCommand(startCmd, terminateCmd, connectCmd, configureCmd)
+	rootCmd.AddCommand(
+		startCmd,
+		terminateCmd,
+		connectCmd,
+		configureCmd,
+		listCmd,
+	)
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Error(err)
