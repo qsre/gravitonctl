@@ -1,0 +1,8 @@
+on: [push]
+name: cloc
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Count Lines of Code (cloc)
+      uses: djdefi/cloc-action@3
