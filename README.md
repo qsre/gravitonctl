@@ -3,6 +3,8 @@
 ## not ready for public use yet (still testing)!
 
  Launch & use a graviton instance in 5 seconds.
+ 
+ ![](https://github.com/qsre/gravitonctl/blob/master/img/graviton.png?raw=true)
 
 ## Usage:
 To start (and connect to) a Graviton instance:
