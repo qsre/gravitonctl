@@ -75,6 +75,21 @@ func DescribeAllRunningInstances() (instances []*ec2.Instance, err error) {
 	return instances, err
 }
 
+func DescribeAllStoppedInstances() (instances []*ec2.Instance, err error) {
+	allInstances, err := describeAllInstances()
+	if err != nil {
+		return instances, err
+	}
+
+	for _, instance := range allInstances {
+		if *instance.State.Name == ec2.InstanceStateNameStopped {
+			instances = append(instances, instance)
+		}
+	}
+
+	return instances, err
+}
+
 func filterInstancesByName(unfilteredInstances []*ec2.Instance, name string) (instances []*ec2.Instance) {
 	for _, instance := range unfilteredInstances {
 		for _, tag := range instance.Tags {
@@ -98,6 +113,15 @@ func describeInstances(name string) (instances []*ec2.Instance, err error) {
 
 func describeRunningInstances(name string) (instances []*ec2.Instance, err error) {
 	unfilteredInstances, err := DescribeAllRunningInstances()
+	if err != nil {
+		return instances, err
+	}
+
+	return filterInstancesByName(unfilteredInstances, name), err
+}
+
+func describeStoppedInstances(name string) (instances []*ec2.Instance, err error) {
+	unfilteredInstances, err := DescribeAllStoppedInstances()
 	if err != nil {
 		return instances, err
 	}

@@ -12,7 +12,9 @@ func Execute() {
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(
 		startCmd,
+		stopCmd,
 		terminateCmd,
+		deleteCmd,
 		connectCmd,
 		configureCmd,
 		listCmd,

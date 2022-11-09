@@ -27,3 +27,12 @@ var terminateCmd = &cobra.Command{
 		}
 	},
 }
+
+var deleteCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "deletes a graviton instance (terminate alias)",
+	Run: func(cmd *cobra.Command, args []string) {
+		// delete is an alias of terminate
+		terminateCmd.Run(cmd, args)
+	},
+}
