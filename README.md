@@ -5,6 +5,11 @@
  Launch & use a graviton instance in 5 seconds.
 
 ## Usage:
+Configure gravitonctl:
+```
+gravitonctl configure
+```
+
 To start (and connect to) a Graviton instance:
 ```
 gravitonctl start {name}
