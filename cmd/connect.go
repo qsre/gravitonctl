@@ -15,6 +15,10 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+func init() {
+	rootCmd.AddCommand(connectCmd)
+}
+
 var connectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "connects to a graviton instance",

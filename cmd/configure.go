@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	rootCmd.AddCommand(configureCmd, configCmd)
+}
+
 var configureCmd = &cobra.Command{
 	Use:   "configure",
 	Short: "configures graviton ctl",
@@ -76,7 +80,7 @@ var configureCmd = &cobra.Command{
 			return
 		}
 
-		log.Println("gravitonctl configured sucessfully!")
+		log.Info("gravitonctl configured sucessfully!")
 
 	},
 }
