@@ -7,18 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var rootCmd = &cobra.Command{Use: "gravitonctl"}
+
 // Execute executes the root command.
 func Execute() {
-	var rootCmd = &cobra.Command{Use: "app"}
-	rootCmd.AddCommand(
-		startCmd,
-		stopCmd,
-		terminateCmd,
-		deleteCmd,
-		connectCmd,
-		configureCmd,
-		listCmd,
-	)
+	rootCmd.AddCommand()
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Error(err)

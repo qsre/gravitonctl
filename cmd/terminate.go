@@ -8,6 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	rootCmd.AddCommand(terminateCmd, deleteCmd)
+}
+
 var terminateCmd = &cobra.Command{
 	Use:   "terminate",
 	Short: "terminates a graviton instance",
