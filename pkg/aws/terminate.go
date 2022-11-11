@@ -13,6 +13,11 @@ func Terminate(name string) error {
 		return err
 	}
 
+	if len(instances) == 0 {
+		log.Infof("No instance with name %s found", name)
+		return nil
+	}
+
 	for _, instance := range instances {
 		if *instance.State.Name == ec2.InstanceStateNameTerminated {
 			continue
@@ -20,15 +25,14 @@ func Terminate(name string) error {
 			//TODO this needs work!
 		}
 
-		log.Infof("Terminating: %s", *instance.InstanceId)
-
 		// range over and delete network interfaces
-		for niNum, ni := range instance.NetworkInterfaces {
-			if niNum == 0 {
+		for _, ni := range instance.NetworkInterfaces {
+			if *ni.Attachment.DeviceIndex == 0 {
+				// root network interface, cannot detach these
 				continue
 			}
 
-			log.Infof("Deleting ni %s", *ni.NetworkInterfaceId)
+			log.Infof("Detaching network interface: %s", *ni.NetworkInterfaceId)
 
 			_, err := ec2svc.DetachNetworkInterface(&ec2.DetachNetworkInterfaceInput{
 				AttachmentId: ni.Attachment.AttachmentId,
@@ -40,19 +44,24 @@ func Terminate(name string) error {
 
 			err = ec2svc.WaitUntilNetworkInterfaceAvailable(&ec2.DescribeNetworkInterfacesInput{
 				NetworkInterfaceIds: []*string{
-					instance.InstanceId,
+					ni.NetworkInterfaceId,
 				},
 			})
 			if err != nil {
 				return err
 			}
 
-			_, err = ec2svc.DeleteNetworkInterface(&ec2.DeleteNetworkInterfaceInput{
-				NetworkInterfaceId: ni.NetworkInterfaceId,
-			})
-			if err != nil {
-				return err
-			}
+			log.Warnf("Network interface: %s detached, but not deleted!", *ni.NetworkInterfaceId)
+
+			// not deleting network interfaces as they may have elastic IP's attached
+			// checking for, and deleting these elastic IP's will be implemented later
+
+			// _, err = ec2svc.DeleteNetworkInterface(&ec2.DeleteNetworkInterfaceInput{
+			// 	NetworkInterfaceId: ni.NetworkInterfaceId,
+			// })
+			// if err != nil {
+			// 	return err
+			// }
 		}
 
 		terminateInstancesInput := &ec2.TerminateInstancesInput{
@@ -60,6 +69,8 @@ func Terminate(name string) error {
 				instance.InstanceId,
 			},
 		}
+
+		log.Infof("Terminating: %s", *instance.InstanceId)
 
 		_, err = ec2svc.TerminateInstances(terminateInstancesInput)
 
@@ -88,11 +99,6 @@ func Terminate(name string) error {
 				return err
 			}
 		}
-	}
-
-	if len(instances) == 0 {
-		log.Infof("No instance with name %s found", name)
-		return nil
 	}
 
 	return err
