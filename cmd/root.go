@@ -17,6 +17,7 @@ func Execute() {
 		deleteCmd,
 		connectCmd,
 		configureCmd,
+		configCmd,
 		listCmd,
 	)
 

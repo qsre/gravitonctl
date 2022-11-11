@@ -80,3 +80,11 @@ var configureCmd = &cobra.Command{
 
 	},
 }
+
+var configCmd = &cobra.Command{
+	Use:   "config",
+	Short: "configures graviton ctl (configure alias)",
+	Run: func(cmd *cobra.Command, args []string) {
+		configureCmd.Run(cmd, args)
+	},
+}
