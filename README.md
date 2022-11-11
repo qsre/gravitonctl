@@ -4,6 +4,8 @@
 
  Launch & use a graviton instance in 5 seconds.
 
+![](https://github.com/qsre/gravitonctl/blob/master/img/graviton.png?raw=true)
+
 ## Usage:
 Configure gravitonctl:
 ```
