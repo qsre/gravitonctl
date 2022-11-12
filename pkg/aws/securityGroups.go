@@ -90,6 +90,21 @@ func createSecurityGroup(sgName string) (groupId string, err error) {
 	createSgOutput, err := ec2svc.CreateSecurityGroup(&ec2.CreateSecurityGroupInput{
 		Description: &sgName,
 		GroupName:   &sgName,
+		TagSpecifications: []*ec2.TagSpecification{
+			{
+				ResourceType: aws.String("security-group"),
+				Tags: []*ec2.Tag{
+					{
+						Key:   aws.String("created-by"),
+						Value: aws.String("gravitonctl"),
+					},
+					{
+						Key:   aws.String("Name"),
+						Value: &sgName,
+					},
+				},
+			},
+		},
 	})
 	if err != nil {
 		return "", err
