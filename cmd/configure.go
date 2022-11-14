@@ -18,63 +18,75 @@ var configureCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("configuring gravitonctl")
 
+		c, err := config.Read()
+		if err != nil {
+			log.Error(err)
+		}
+
 		// REGION
-		fmt.Printf("AWS Region [eu-central-1]: ")
-		var region string
-		l, err := fmt.Scanln(&region)
+		if c.Region != "" {
+			fmt.Printf("AWS Region [%s]: ", c.Region)
+		} else {
+			fmt.Printf("AWS Region [ie: eu-central-1]: ")
+		}
+
+		l, err := fmt.Scanln(&c.Region)
 		if err != nil {
 			if err.Error() != "unexpected newline" {
 				log.Error(err)
 			}
 		}
 
-		if l == 0 {
-			region = "eu-central-1"
+		if l == 0 && c.Region == "" {
+			log.Error("region cannot be blank, exiting ...")
+			return
 		}
 
 		// KEY NAME
-		fmt.Printf("default key name [ie: myKey]: ")
-		var keyName string
-		l, err = fmt.Scanln(&keyName)
+		if c.KeyName != "" {
+			fmt.Printf("default key name [%s]:", c.KeyName)
+		} else {
+			fmt.Printf("default key name [ie: myKey]: ")
+		}
+
+		l, err = fmt.Scanln(&c.KeyName)
 		if err != nil {
 			if err.Error() != "unexpected newline" {
 				log.Error(err)
 			}
 		}
 
-		if l == 0 {
-			log.Info("key name cannot be blank, exiting ...")
+		if l == 0 && c.KeyName == "" {
+			log.Error("key name cannot be blank, exiting ...")
 			return
 		}
 
 		// KEY LOCATION
-		fmt.Printf("default key location [ie: ~/myKey.pem]: ")
-		var keyLocation string
-		l, err = fmt.Scanln(&keyLocation)
+		if c.KeyLocation != "" {
+			fmt.Printf("default key location [%s]: ", c.KeyLocation)
+		} else {
+			fmt.Printf("default key location [ie: ~/myKey.pem]: ")
+		}
+
+		l, err = fmt.Scanln(&c.KeyLocation)
 		if err != nil {
 			if err.Error() != "unexpected newline" {
 				log.Error(err)
 			}
 		}
 
-		if l == 0 {
+		if l == 0 && c.KeyLocation == "" {
 			log.Error("key location cannot be blank, exiting ...")
 			return
 		}
 
-		config := config.GravitonctlConfig{
-			Region:      region,
-			KeyName:     keyName,
-			KeyLocation: keyLocation,
-		}
-
-		err = config.Validate()
+		err = c.Validate()
 		if err != nil {
 			log.Error(err)
 			return
 		}
 
-		err = config.Write()
+		err = c.Write()
 		if err != nil {
 			log.Error(err)
 			return

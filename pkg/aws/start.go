@@ -62,6 +62,11 @@ func Start(name string, keyName string) error {
 			sgId = groupIds[0]
 		}
 
+		ami, err := GetAMI()
+		if err != nil {
+			return err
+		}
+
 		// bare minimum input
 		input := &ec2.RunInstancesInput{
 			BlockDeviceMappings: []*ec2.BlockDeviceMapping{
@@ -72,7 +77,7 @@ func Start(name string, keyName string) error {
 					},
 				},
 			},
-			ImageId:      aws.String("ami-0a7559a0ef82639f2"),
+			ImageId:      aws.String(ami),
 			InstanceType: aws.String(ec2.InstanceTypeT4gMicro),
 			KeyName:      &keyName,
 			MaxCount:     aws.Int64(1),
